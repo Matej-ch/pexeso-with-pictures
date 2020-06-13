@@ -69,7 +69,7 @@ let cardsArray = [
     },
     {
         value: 1,
-        src: '118-mackbook.svg'
+        src: '118-macbook.svg'
     },
     {
         value: 1,
@@ -81,7 +81,7 @@ let cardsArray = [
     },
     {
         value: 1,
-        src: 'day4-polaroid.svg'
+        src: 'day4-polariod.svg'
     },
     {
         value: 1,
@@ -134,7 +134,7 @@ let cardsArray = [
     },
     {
         value: 1,
-        src: 'day-79-coffee.svg',
+        src: 'day79-coffee.svg',
     },
     {
         value: 1,
@@ -170,7 +170,7 @@ let cardsArray = [
     },
     {
         value: 1,
-        src: 'day93-programming.svg',
+        src: 'day93-programing.svg',
     },
     {
         value: 1,

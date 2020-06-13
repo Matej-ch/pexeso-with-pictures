@@ -3,7 +3,7 @@
     <ScoreBoard :score=0 />
 
     <div class="cards-container">
-      <Card v-for="card in cards" :key="card.id" :card="card"/>
+      <Card v-for="card in cards" :key="card.id" :cardData="card"/>
     </div>
   </div>
 </template>
@@ -43,7 +43,7 @@ export default {
           flipped: false,
           matched: false,
           id: `${name}-a`,
-          img: `./assets/${card.src}`,
+          img: `${card.src}`,
         };
 
         this.cards.push(firstCard);
