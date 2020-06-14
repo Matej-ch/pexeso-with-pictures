@@ -12,7 +12,7 @@
     </div>
 
     <div class="cards-container">
-      <Card v-for="card in cards" :key="card.id" :cardData="card"/>
+      <Card v-for="card in cards" :key="card.id" :cardData="card" @flipped="flipCard"/>
     </div>
   </div>
 </template>
@@ -44,6 +44,17 @@ export default {
     }
   },
   methods: {
+
+    flipCard: function(cardID) {
+      console.log(cardID);
+
+      const flippedCard = this.cards.find(obj => obj.id === cardID);
+
+      if (flippedCard.isFlipped) {
+        return;
+      }
+    },
+
     reset: function() {
       this.cards = [];
 
@@ -73,8 +84,8 @@ export default {
         let name = card.src.split('.')[0];
         const firstCard = {
           matchKey: name,
-          flipped: false,
-          matched: false,
+          isFlipped: false,
+          isMatched: false,
           id: `${name}-a`,
           img: `${card.src}`,
         };
