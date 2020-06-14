@@ -2,6 +2,15 @@
   <div id="app" class="container">
     <ScoreBoard :score=0 />
 
+    <div>
+      <div>
+        How many different cards do you want <input type="number" min="1" max="50" value="20" ref="cardCountInput">
+        <button @click="pickNewSet">Pick</button>
+      </div>
+      <button @click="reset">Reset game</button>
+      <button @click="shuffle">Shuffle</button>
+    </div>
+
     <div class="cards-container">
       <Card v-for="card in cards" :key="card.id" :cardData="card"/>
     </div>
@@ -12,6 +21,7 @@
 import ScoreBoard from './components/ScoreBoard.vue'
 import Card from './components/Card'
 import cardsArray from './cards'
+import Vue from 'vue'
 
 export default {
   name: 'App',
@@ -25,7 +35,7 @@ export default {
 
     this.generateCardsPairs(cards);
 
-    this.shuffle();
+    this.shuffleCards();
   },
   data: function() {
     return {
@@ -34,6 +44,29 @@ export default {
     }
   },
   methods: {
+    reset: function() {
+      this.cards = [];
+
+      let cards = this.getRandomCards(this.carVarietyCount);
+
+      this.generateCardsPairs(cards);
+
+      this.shuffleCards();
+    },
+    shuffle: function() {
+
+      this.shuffleCards();
+
+    },
+    pickNewSet: function() {
+      this.cards = [];
+
+      let cards = this.getRandomCards(this.$refs.cardCountInput.value);
+
+      this.generateCardsPairs(cards);
+
+      this.shuffleCards();
+    },
     generateCardsPairs: function (cards) {
 
       for (const card of cards) {
@@ -69,16 +102,16 @@ export default {
       return cards;
     },
 
-    shuffle: function () {
-      let currentIndex = this.cards.length, temporaryValue, randomIndex;
+    shuffleCards: function () {
+      let currentIndex = this.cards.length, temp, randomIndex;
 
       while (0 !== currentIndex) {
         randomIndex = Math.floor(Math.random() * currentIndex);
         currentIndex -= 1;
 
-        temporaryValue = this.cards[currentIndex];
-        this.cards[currentIndex] = this.cards[randomIndex];
-        this.cards[randomIndex] = temporaryValue;
+        temp = this.cards[currentIndex];
+        Vue.set(this.cards,currentIndex,this.cards[randomIndex]);
+        Vue.set(this.cards,randomIndex,temp);
       }
     }
   }
@@ -96,6 +129,10 @@ export default {
   }
 
   .cards-container {
-
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 2fr));
+    row-gap: 10px;
+    column-gap:80px;
+    padding: 15px;
   }
 </style>
