@@ -1,6 +1,6 @@
 <template>
   <div id="app" class="container">
-    <ScoreBoard :score=0 />
+    <ScoreBoard :score=score />
 
     <ControlBoard  @reseted="reset" @shuffled="shuffle" @picked="pickNewSet"/>
 
@@ -11,13 +11,13 @@
 </template>
 
 <script>
-import ScoreBoard from './components/ScoreBoard.vue'
-import Card from './components/Card'
-import cardsArray from './cards'
-import Vue from 'vue'
-import ControlBoard from "@/components/ControlBoard";
+  import ScoreBoard from './components/ScoreBoard.vue'
+  import Card from './components/Card'
+  import cardsArray from './cards'
+  import Vue from 'vue'
+  import ControlBoard from "@/components/ControlBoard";
 
-export default {
+  export default {
   name: 'App',
   components: {
     ScoreBoard,
@@ -35,19 +35,74 @@ export default {
   data: function() {
     return {
       cards: [],
-      carVarietyCount: 10
+      carVarietyCount: 10,
+      flipCount: 0,
+      firstFlipID: null,
+      firstFlipMatchKey: null,
+      score: 0,
     }
   },
   methods: {
-
+    incrementFlipsThisTurn() {
+      this.flipCount++;
+    },
     flipCard: function(cardID) {
-      console.log(cardID);
 
       const flippedCard = this.cards.find(obj => obj.id === cardID);
 
       if (flippedCard.isFlipped) {
         return;
       }
+
+      this.incrementFlipsThisTurn();
+
+      if(this.flipCount === 1) {
+        this.flipFirst(flippedCard);
+      }
+
+      if(this.flipCount === 2) {
+        this.flipSecond(flippedCard);
+      }
+
+    },
+
+    flipFirst: function(card) {
+
+      this.showCard(card.id);
+
+      this.firstFlipID = card.id;
+      this.firstFlipMatchKey = card.matchKey;
+    },
+    flipSecond: function(card) {
+
+      this.showCard(card.id);
+      this.checkMatch(card);
+    },
+
+    showCard: function (id) {
+      this.cards = this.cards.map(card => card.id === id ? {...card, flipped: !card.flipped} : card);
+    },
+
+    checkMatch: function (card) {
+      //setTimeout(() => {
+        if (card.matchKey === this.firstFlipMatchKey) {
+          // Match!
+          // reset flips counter
+          this.flipCount = 0;
+          // update the 2 cards 'matched' prop
+          this.cards = this.cards.map(card => ([card.id, this.firstFlipID].includes(card.id)) ? { ...card, matched: true } : card );
+          // update score
+          this.score++;
+        } else {
+          // Not a match
+          // Turn both cards back face down
+          this.showCard(card.id);
+          this.showCard(this.firstFlipID);
+          this.flipCount = 0;
+          // update the score
+          this.score--;
+        }
+      //}, 1000);
     },
 
     reset: function() {
@@ -60,9 +115,7 @@ export default {
       this.shuffleCards();
     },
     shuffle: function() {
-
       this.shuffleCards();
-
     },
     pickNewSet: function(value) {
       this.cards = [];

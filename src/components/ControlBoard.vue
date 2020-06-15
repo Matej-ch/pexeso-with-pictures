@@ -6,7 +6,8 @@
         </div>
 
         <div>
-            <span class="info">How many different cards do you want: </span> <input type="number" min="1" max="50" value="20" ref="cardCountInput" class="input">
+            <span class="info">How many different cards do you want: </span>
+            <input type="number" min="1" max="50" value="20" ref="cardCountInput" class="input">
             <button class="btn" @click="pickNewSet">Pick</button>
         </div>
     </div>
@@ -23,7 +24,14 @@
                 this.$emit('shuffled');
             },
             pickNewSet: function () {
-                this.$emit('picked',this.$refs.cardCountInput.value);
+                let input = this.$refs.cardCountInput;
+                let val = input.value;
+                if(val > parseInt(input.getAttribute('max'))) {
+                    input.value = val;
+                } else {
+                    this.$emit('picked',input.value);
+                }
+
             }
         }
     }
