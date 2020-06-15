@@ -2,13 +2,16 @@
   <div id="app" class="container">
     <ScoreBoard :score=0 />
 
-    <div>
+    <div class="btns-container">
       <div>
-        How many different cards do you want <input type="number" min="1" max="50" value="20" ref="cardCountInput">
-        <button @click="pickNewSet">Pick</button>
+        <button class="btn" @click="reset">Reset game</button>
+        <button class="btn" @click="shuffle">Shuffle</button>
       </div>
-      <button @click="reset">Reset game</button>
-      <button @click="shuffle">Shuffle</button>
+
+      <div>
+        <span class="info">How many different cards do you want: </span> <input type="number" min="1" max="50" value="20" ref="cardCountInput" class="input">
+        <button class="btn" @click="pickNewSet">Pick</button>
+      </div>
     </div>
 
     <div class="cards-container">
@@ -130,13 +133,23 @@ export default {
 </script>
 
 <style>
+
+  @import './assets/styles/main.css';
+
   .container {
     font-family: Avenir, Helvetica, Arial, sans-serif;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
     text-align: center;
     color: #2c3e50;
-    margin-top: 60px;
+
+    background:
+            radial-gradient(black 15%, transparent 16%) 0 0,
+            radial-gradient(black 15%, transparent 16%) 8px 8px,
+            radial-gradient(rgba(255,255,255,0.1) 15%, transparent 20%) 0 1px,
+            radial-gradient(rgba(255,255,255,0.1) 15%, transparent 20%) 8px 9px;
+    background-color:#141414;
+    background-size:16px 16px;
   }
 
   .cards-container {
@@ -145,5 +158,71 @@ export default {
     row-gap: 10px;
     column-gap:80px;
     padding: 15px;
+    margin-left: 15px;
+    margin-right: 15px;
+    margin-top: 15px;
   }
+
+  .btns-container {
+    padding: 15px 30px;
+    display: flex;
+    justify-content: space-between;
+    flex-direction: row;
+    flex-wrap: wrap;
+    border-bottom: 2px solid gray;
+    background-color: rgba(255,255,255,0.7);
+    margin-bottom: 30px;
+
+    box-shadow:
+            0 0 10px #fff,            /* outer white */
+            -10px 0 25px #7a007a,        /* outer left magenta */
+            10px 10px 25px #006b6b;         /* outer right cyan */
+  }
+
+  .info {
+    color: black;
+    font-size: 1.2em;
+    font-weight: bold;
+  }
+
+  .btn {
+    backface-visibility: hidden;
+    background-color: #0a0a0a;
+    border: 2px solid black;
+    border-radius: 4px;
+    color: rgb(255, 255, 255);
+    cursor: pointer;
+    display: inline-block;
+    font-weight: bold;
+    letter-spacing: 0.1em;
+    padding: 1em 2em;
+    text-align: center;
+    text-decoration: none;
+    text-transform: uppercase;
+    transition: all 0.3s ease 0s;
+    margin-left: 15px;
+    margin-right: 15px;
+  }
+
+  .btn:hover {
+    box-shadow: rgba(0, 0, 0, 0.1) 0 0.3rem 1rem;
+    background-color: rgba(10, 10, 10, 0.8);
+  }
+
+  .input {
+    padding: 1em 2em;
+    border-radius: 4px;
+    border: 2px solid black;
+  }
+
+  .input[type=number]::-webkit-inner-spin-button,
+  .input[type=number]::-webkit-outer-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+  }
+
+  .input[type=number] {
+    -moz-appearance: textfield;
+  }
+
 </style>
