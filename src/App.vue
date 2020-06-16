@@ -2,11 +2,12 @@
   <div id="app" class="container">
     <ScoreBoard :score=score />
 
-    <ControlBoard  @reseted="reset" @shuffled="shuffle" @picked="pickNewSet"/>
+    <ControlBoard  @reseted="reset" @shuffled="shuffle" @picked="pickNewSet" :mainCount=cardVarietyCount />
 
-    <div class="cards-container">
+    <transition-group name="show-cards" tag="div" class="cards-container">
       <Card v-for="card in cards" :key="card.id" :cardData="card" @flipped="flipCard"/>
-    </div>
+    </transition-group>
+
   </div>
 </template>
 
@@ -26,7 +27,7 @@
   },
   mounted: function() {
 
-    let cards = this.getRandomCards(this.carVarietyCount);
+    let cards = this.getRandomCards(this.cardVarietyCount);
 
     this.generateCardsPairs(cards);
 
@@ -35,7 +36,7 @@
   data: function() {
     return {
       cards: [],
-      carVarietyCount: 10,
+      cardVarietyCount: 2,
       flipCount: 0,
       firstFlipID: null,
       firstFlipMatchKey: null,
@@ -80,33 +81,47 @@
     },
 
     showCard: function (id) {
-      this.cards = this.cards.map(card => card.id === id ? {...card, isFlipped: !card.isFlipped} : card);
+      this.cards = this.cards.map(card => (card.id === id && !card.isIgnored) ? {...card, isFlipped: !card.isFlipped} : card);
     },
 
     checkMatch: function (card) {
       setTimeout(() => {
         if (card.matchKey === this.firstFlipMatchKey) {
           // Match!
-          // reset flips counter
           this.flipCount = 0;
-          // update the 2 cards 'matched' prop
 
-          this.cards = this.cards.map(item => [card.id, this.firstFlipID].includes(item.id) ? { ...item, isMatched: true } : item );
+          this.cards = this.cards.map(item => [card.id, this.firstFlipID].includes(item.id) ? { ...item, isMatched: true,isIgnored: true } : item );
+
           this.score++;
+
+          setTimeout(() => {
+            this.checkFinishingMove();
+          },500);
+
         } else {
           // Not a match
-          // Turn both cards back face down
           this.showCard(card.id);
           this.showCard(this.firstFlipID);
           this.flipCount = 0;
         }
-      }, 1000);
+      }, 850);
     },
 
+    checkFinishingMove: function () {
+      ///let allCardsCount = this.cardVarietyCount * 2;
+
+      const isIgnored = (card) => card.isIgnored;
+
+      if(this.cards.every(isIgnored)) {
+        for(let i = this.cards.length-1;i>=0;i--){
+          this.cards.splice(Math.floor(Math.random()*this.cards.length), 1);
+        }
+      }
+    },
     reset: function() {
       this.cards = [];
 
-      let cards = this.getRandomCards(this.carVarietyCount);
+      let cards = this.getRandomCards(this.cardVarietyCount);
 
       this.generateCardsPairs(cards);
 
@@ -143,6 +158,7 @@
           matchKey: name,
           isFlipped: false,
           isMatched: false,
+          isIgnored: false,
           id: `${name}-a`,
           img: `${card.src}`,
         };
@@ -219,4 +235,14 @@
     justify-content: center;
   }
 
+
+  .show-cards-enter-active, .show-cards-leave-active {
+    transition: opacity .5s;
+  }
+  .show-cards-enter, .show-cards-leave-to {
+    opacity: 0;
+  }
+  .show-cards-move {
+    transition: opacity 1s;
+  }
 </style>

@@ -7,7 +7,7 @@
 
         <div>
             <span class="info">How many different cards do you want: </span>
-            <input type="number" min="1" max="50" value="20" ref="cardCountInput" class="input">
+            <input type="number" min="1" max="50" :value=mainCount ref="cardCountInput" class="input">
             <button class="btn" @click="pickNewSet">Pick</button>
         </div>
     </div>
@@ -16,6 +16,11 @@
 <script>
     export default {
         name: "ControlBoard",
+        props: {
+            mainCount: {
+                type: Number,
+            },
+        },
         methods: {
             reset: function () {
                 this.$emit('reseted');
