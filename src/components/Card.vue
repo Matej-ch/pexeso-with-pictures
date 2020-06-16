@@ -48,7 +48,7 @@
         align-items: center;
         width: 200px;
         height: 200px;
-        margin: 5px;
+        margin: 15px;
         cursor: pointer;
     }
 

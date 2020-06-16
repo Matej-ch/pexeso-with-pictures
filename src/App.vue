@@ -4,6 +4,11 @@
 
     <ControlBoard  @reseted="reset" @shuffled="shuffle" @picked="pickNewSet" :mainCount=cardVarietyCount />
 
+    <div class="pyro" v-show="fireworks">
+      <div class="before"></div>
+      <div class="after"></div>
+    </div>
+
     <transition-group name="show-cards" tag="div" class="cards-container">
       <Card v-for="card in cards" :key="card.id" :cardData="card" @flipped="flipCard"/>
     </transition-group>
@@ -36,11 +41,12 @@
   data: function() {
     return {
       cards: [],
-      cardVarietyCount: 2,
+      cardVarietyCount: 15,
       flipCount: 0,
       firstFlipID: null,
       firstFlipMatchKey: null,
       score: 0,
+      fireworks: false,
     }
   },
   methods: {
@@ -108,14 +114,11 @@
     },
 
     checkFinishingMove: function () {
-      ///let allCardsCount = this.cardVarietyCount * 2;
-
       const isIgnored = (card) => card.isIgnored;
 
       if(this.cards.every(isIgnored)) {
-        for(let i = this.cards.length-1;i>=0;i--){
-          this.cards.splice(Math.floor(Math.random()*this.cards.length), 1);
-        }
+        this.cards = [];
+        this.fireworks = true;
       }
     },
     reset: function() {
@@ -131,6 +134,7 @@
       this.firstFlipID = null;
       this.firstFlipMatchKey = null;
       this.score= 0;
+      this.fireworks = false;
 
     },
     shuffle: function() {
@@ -149,6 +153,8 @@
       this.firstFlipID = null;
       this.firstFlipMatchKey = null;
       this.score= 0;
+      this.cardVarietyCount = value;
+      this.fireworks = false;
     },
     generateCardsPairs: function (cards) {
 
@@ -235,9 +241,8 @@
     justify-content: center;
   }
 
-
   .show-cards-enter-active, .show-cards-leave-active {
-    transition: opacity .5s;
+    transition: opacity 1s;
   }
   .show-cards-enter, .show-cards-leave-to {
     opacity: 0;
