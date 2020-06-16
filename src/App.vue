@@ -63,7 +63,6 @@
       if(this.flipCount === 2) {
         this.flipSecond(flippedCard);
       }
-
     },
 
     flipFirst: function(card) {
@@ -73,6 +72,7 @@
       this.firstFlipID = card.id;
       this.firstFlipMatchKey = card.matchKey;
     },
+
     flipSecond: function(card) {
 
       this.showCard(card.id);
@@ -84,14 +84,14 @@
     },
 
     checkMatch: function (card) {
-      //setTimeout(() => {
+      setTimeout(() => {
         if (card.matchKey === this.firstFlipMatchKey) {
           // Match!
           // reset flips counter
           this.flipCount = 0;
           // update the 2 cards 'matched' prop
-          this.cards = this.cards.map(card => ([card.id, this.firstFlipID].includes(card.id)) ? { ...card, isMatched: true } : card );
-          // update score
+
+          this.cards = this.cards.map(item => [card.id, this.firstFlipID].includes(item.id) ? { ...item, isMatched: true } : item );
           this.score++;
         } else {
           // Not a match
@@ -99,10 +99,8 @@
           this.showCard(card.id);
           this.showCard(this.firstFlipID);
           this.flipCount = 0;
-          // update the score
-          this.score--;
         }
-      //}, 1000);
+      }, 1000);
     },
 
     reset: function() {
@@ -218,7 +216,7 @@
     margin-left: 15px;
     margin-right: 15px;
     margin-top: 15px;
-    justify-content: space-evenly;
+    justify-content: center;
   }
 
 </style>

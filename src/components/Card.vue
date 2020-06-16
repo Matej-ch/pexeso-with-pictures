@@ -55,8 +55,27 @@
     .flipped .inner {
         transform: rotateY(180deg);
     }
-    .matched .inner {
+    .matched .inner .image {
         opacity: 0.2;
+    }
+
+    .matched .inner {
+        transform: scale(0.9);
+    }
+
+    .matched .inner .front {
+        background: linear-gradient(45deg, #808080, #e3e3e3);
+    }
+
+    .matched .inner .front::before {
+        content: "X";
+        font-weight: bold;
+        font-size: 8em;
+        text-align: center;
+        height: 100%;
+        display: flex;
+        justify-content: center;
+        align-items: center;
     }
 
     .inner {
@@ -79,7 +98,7 @@
         background-size: contain;
         background-repeat: no-repeat;
         background-position: 50% 50%;
-        background-color: #fff;
+        background-color: black;
         top: 0;
         left: 0;
         width: 100%;
