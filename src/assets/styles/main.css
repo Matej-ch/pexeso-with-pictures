@@ -1,14 +1,78 @@
 body {
     margin: 0;
+    overflow: hidden;
 }
 * {
     box-sizing: border-box;
 }
 
 body, html {
-    height: 100%;
+    height: 100vh;
 }
 
 html {
     font-size: calc(.65em - -.04vw);
+}
+
+.pyro > .before, .pyro > .after {
+    position: absolute;
+    width: 5px;
+    height: 5px;
+    border-radius: 50%;
+    box-shadow: 0 0 #fff, 0 0 #fff, 0 0 #fff, 0 0 #fff, 0 0 #fff, 0 0 #fff, 0 0 #fff, 0 0 #fff, 0 0 #fff, 0 0 #fff, 0 0 #fff, 0 0 #fff, 0 0 #fff, 0 0 #fff, 0 0 #fff, 0 0 #fff, 0 0 #fff, 0 0 #fff, 0 0 #fff, 0 0 #fff, 0 0 #fff, 0 0 #fff, 0 0 #fff, 0 0 #fff, 0 0 #fff, 0 0 #fff, 0 0 #fff, 0 0 #fff, 0 0 #fff, 0 0 #fff, 0 0 #fff, 0 0 #fff, 0 0 #fff, 0 0 #fff, 0 0 #fff, 0 0 #fff, 0 0 #fff, 0 0 #fff, 0 0 #fff, 0 0 #fff, 0 0 #fff, 0 0 #fff, 0 0 #fff, 0 0 #fff, 0 0 #fff, 0 0 #fff, 0 0 #fff, 0 0 #fff, 0 0 #fff, 0 0 #fff, 0 0 #fff;
+    -moz-animation: 1s bang ease-out infinite backwards, 1s gravity ease-in infinite backwards, 5s position linear infinite backwards;
+    -webkit-animation: 1s bang ease-out infinite backwards, 1s gravity ease-in infinite backwards, 5s position linear infinite backwards;
+    -o-animation: 1s bang ease-out infinite backwards, 1s gravity ease-in infinite backwards, 5s position linear infinite backwards;
+    animation: 1s bang ease-out infinite backwards, 1s gravity ease-in infinite backwards, 5s position linear infinite backwards;
+}
+
+.pyro > .after {
+    -moz-animation-delay: 1.25s, 1.25s, 1.25s;
+    -webkit-animation-delay: 1.25s, 1.25s, 1.25s;
+    -o-animation-delay: 1.25s, 1.25s, 1.25s;
+    animation-delay: 1.25s, 1.25s, 1.25s;
+    -moz-animation-duration: 1.25s, 1.25s, 6.25s;
+    -webkit-animation-duration: 1.25s, 1.25s, 6.25s;
+    -o-animation-duration: 1.25s, 1.25s, 6.25s;
+    animation-duration: 1.25s, 1.25s, 6.25s;
+}
+
+@keyframes bang {
+    to {
+        box-shadow: 114px 18.3333333333px #00ddff, -153px -397.6666666667px #73ff00, 190px -288.6666666667px #ff7300, -21px -176.6666666667px #5e00ff, 100px -376.6666666667px #00e6ff, -98px -34.6666666667px #9900ff, -188px -305.6666666667px #0091ff, 8px -220.6666666667px #ff9900, -228px -235.6666666667px #0900ff, 240px -169.6666666667px #ff6200, 95px -273.6666666667px #00ff48, -53px -277.6666666667px #ff3700, -168px -119.6666666667px #006aff, 27px -20.6666666667px #0900ff, 64px -29.6666666667px #ff009d, 151px 54.3333333333px #00ff33, 169px -414.6666666667px #ff00a2, -231px -136.6666666667px #ff0040, 249px -123.6666666667px #0044ff, -149px -299.6666666667px #ff4400, -7px -28.6666666667px #ff0062, -99px -13.6666666667px #2b00ff, -121px -206.6666666667px #ff005e, -154px -6.6666666667px #fb00ff, -199px -131.6666666667px #7bff00, -8px -43.6666666667px #ee00ff, -214px -397.6666666667px #e600ff, -70px -68.6666666667px #00ff2f, -68px 39.3333333333px #00f2ff, -80px -291.6666666667px #00ffb7, 26px -337.6666666667px #0011ff, -50px -405.6666666667px #00ff84, 60px 26.3333333333px #00ff7b, -32px -87.6666666667px #ff00a2, 15px -345.6666666667px #0009ff, 78px -334.6666666667px #ff6200, -132px -81.6666666667px #00ffae, 90px -121.6666666667px #ff001e, -73px -6.6666666667px #ff00bb, -71px -342.6666666667px #ff0088, 228px -101.6666666667px #f700ff, -168px -403.6666666667px #37ff00, -220px 45.3333333333px #51ff00, 223px -246.6666666667px #ff00d5, 129px -321.6666666667px #ff5e00, -81px -373.6666666667px #ff008c, -34px -123.6666666667px #00ffbf, 31px -203.6666666667px #95ff00, -52px -41.6666666667px deepskyblue, 240px -392.6666666667px #0048ff, -117px -360.6666666667px #ff2200;
+    }
+}
+
+@keyframes gravity {
+    to {
+        transform: translateY(200px);
+        -moz-transform: translateY(200px);
+        -webkit-transform: translateY(200px);
+        -o-transform: translateY(200px);
+        -ms-transform: translateY(200px);
+        opacity: 0;
+    }
+}
+
+@keyframes position {
+    0%, 19.9% {
+        margin-top: 10%;
+        margin-left: 40%;
+    }
+    20%, 39.9% {
+        margin-top: 40%;
+        margin-left: 30%;
+    }
+    40%, 59.9% {
+        margin-top: 20%;
+        margin-left: 70%;
+    }
+    60%, 79.9% {
+        margin-top: 30%;
+        margin-left: 20%;
+    }
+    80%, 99.9% {
+        margin-top: 30%;
+        margin-left: 80%;
+    }
 }

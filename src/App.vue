@@ -2,11 +2,17 @@
   <div id="app" class="container">
     <ScoreBoard :score=score />
 
-    <ControlBoard  @reseted="reset" @shuffled="shuffle" @picked="pickNewSet"/>
+    <ControlBoard  @reseted="reset" @shuffled="shuffle" @picked="pickNewSet" :mainCount=cardVarietyCount />
 
-    <div class="cards-container">
-      <Card v-for="card in cards" :key="card.id" :cardData="card" @flipped="flipCard"/>
+    <div class="pyro" v-show="fireworks">
+      <div class="before"></div>
+      <div class="after"></div>
     </div>
+
+    <transition-group name="show-cards" tag="div" class="cards-container">
+      <Card v-for="card in cards" :key="card.id" :cardData="card" @flipped="flipCard"/>
+    </transition-group>
+
   </div>
 </template>
 
@@ -26,7 +32,7 @@
   },
   mounted: function() {
 
-    let cards = this.getRandomCards(this.carVarietyCount);
+    let cards = this.getRandomCards(this.cardVarietyCount);
 
     this.generateCardsPairs(cards);
 
@@ -35,11 +41,12 @@
   data: function() {
     return {
       cards: [],
-      carVarietyCount: 10,
+      cardVarietyCount: 15,
       flipCount: 0,
       firstFlipID: null,
       firstFlipMatchKey: null,
       score: 0,
+      fireworks: false,
     }
   },
   methods: {
@@ -63,7 +70,6 @@
       if(this.flipCount === 2) {
         this.flipSecond(flippedCard);
       }
-
     },
 
     flipFirst: function(card) {
@@ -73,6 +79,7 @@
       this.firstFlipID = card.id;
       this.firstFlipMatchKey = card.matchKey;
     },
+
     flipSecond: function(card) {
 
       this.showCard(card.id);
@@ -80,39 +87,55 @@
     },
 
     showCard: function (id) {
-      this.cards = this.cards.map(card => card.id === id ? {...card, flipped: !card.flipped} : card);
+      this.cards = this.cards.map(card => (card.id === id && !card.isIgnored) ? {...card, isFlipped: !card.isFlipped} : card);
     },
 
     checkMatch: function (card) {
-      //setTimeout(() => {
+      setTimeout(() => {
         if (card.matchKey === this.firstFlipMatchKey) {
           // Match!
-          // reset flips counter
           this.flipCount = 0;
-          // update the 2 cards 'matched' prop
-          this.cards = this.cards.map(card => ([card.id, this.firstFlipID].includes(card.id)) ? { ...card, matched: true } : card );
-          // update score
+
+          this.cards = this.cards.map(item => [card.id, this.firstFlipID].includes(item.id) ? { ...item, isMatched: true,isIgnored: true } : item );
+
           this.score++;
+
+          setTimeout(() => {
+            this.checkFinishingMove();
+          },500);
+
         } else {
           // Not a match
-          // Turn both cards back face down
           this.showCard(card.id);
           this.showCard(this.firstFlipID);
           this.flipCount = 0;
-          // update the score
-          this.score--;
         }
-      //}, 1000);
+      }, 850);
     },
 
+    checkFinishingMove: function () {
+      const isIgnored = (card) => card.isIgnored;
+
+      if(this.cards.every(isIgnored)) {
+        this.cards = [];
+        this.fireworks = true;
+      }
+    },
     reset: function() {
       this.cards = [];
 
-      let cards = this.getRandomCards(this.carVarietyCount);
+      let cards = this.getRandomCards(this.cardVarietyCount);
 
       this.generateCardsPairs(cards);
 
       this.shuffleCards();
+
+      this.flipCount = 0;
+      this.firstFlipID = null;
+      this.firstFlipMatchKey = null;
+      this.score= 0;
+      this.fireworks = false;
+
     },
     shuffle: function() {
       this.shuffleCards();
@@ -125,6 +148,13 @@
       this.generateCardsPairs(cards);
 
       this.shuffleCards();
+
+      this.flipCount = 0;
+      this.firstFlipID = null;
+      this.firstFlipMatchKey = null;
+      this.score= 0;
+      this.cardVarietyCount = value;
+      this.fireworks = false;
     },
     generateCardsPairs: function (cards) {
 
@@ -134,6 +164,7 @@
           matchKey: name,
           isFlipped: false,
           isMatched: false,
+          isIgnored: false,
           id: `${name}-a`,
           img: `${card.src}`,
         };
@@ -182,6 +213,9 @@
   @import './assets/styles/main.css';
 
   .container {
+    overflow: auto;
+    height: 100vh;
+    width: 100%;
     font-family: Avenir, Helvetica, Arial, sans-serif;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
@@ -198,14 +232,22 @@
   }
 
   .cards-container {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(200px, 2fr));
-    row-gap: 10px;
-    column-gap:80px;
-    padding: 15px;
+    display: flex;
+    flex-flow: wrap;
+    padding: 15px 10px;
     margin-left: 15px;
     margin-right: 15px;
     margin-top: 15px;
+    justify-content: center;
   }
 
+  .show-cards-enter-active, .show-cards-leave-active {
+    transition: opacity 1s;
+  }
+  .show-cards-enter, .show-cards-leave-to {
+    opacity: 0;
+  }
+  .show-cards-move {
+    transition: opacity 1s;
+  }
 </style>
