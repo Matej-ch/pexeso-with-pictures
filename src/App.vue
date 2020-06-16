@@ -80,7 +80,7 @@
     },
 
     showCard: function (id) {
-      this.cards = this.cards.map(card => card.id === id ? {...card, flipped: !card.flipped} : card);
+      this.cards = this.cards.map(card => card.id === id ? {...card, isFlipped: !card.isFlipped} : card);
     },
 
     checkMatch: function (card) {
@@ -90,7 +90,7 @@
           // reset flips counter
           this.flipCount = 0;
           // update the 2 cards 'matched' prop
-          this.cards = this.cards.map(card => ([card.id, this.firstFlipID].includes(card.id)) ? { ...card, matched: true } : card );
+          this.cards = this.cards.map(card => ([card.id, this.firstFlipID].includes(card.id)) ? { ...card, isMatched: true } : card );
           // update score
           this.score++;
         } else {
@@ -113,6 +113,12 @@
       this.generateCardsPairs(cards);
 
       this.shuffleCards();
+
+      this.flipCount = 0;
+      this.firstFlipID = null;
+      this.firstFlipMatchKey = null;
+      this.score= 0;
+
     },
     shuffle: function() {
       this.shuffleCards();
@@ -125,6 +131,11 @@
       this.generateCardsPairs(cards);
 
       this.shuffleCards();
+
+      this.flipCount = 0;
+      this.firstFlipID = null;
+      this.firstFlipMatchKey = null;
+      this.score= 0;
     },
     generateCardsPairs: function (cards) {
 
@@ -182,6 +193,9 @@
   @import './assets/styles/main.css';
 
   .container {
+    overflow: auto;
+    height: 100vh;
+    width: 100%;
     font-family: Avenir, Helvetica, Arial, sans-serif;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
@@ -198,14 +212,13 @@
   }
 
   .cards-container {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(200px, 2fr));
-    row-gap: 10px;
-    column-gap:80px;
-    padding: 15px;
+    display: flex;
+    flex-flow: wrap;
+    padding: 15px 10px;
     margin-left: 15px;
     margin-right: 15px;
     margin-top: 15px;
+    justify-content: space-evenly;
   }
 
 </style>
