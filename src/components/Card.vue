@@ -1,7 +1,7 @@
 <template>
     <div class="card" :class="cardClasses" @click="flipCard">
         <div class="inner">
-            <div class="front"></div>
+            <div class="front" :style="'background: linear-gradient(45deg,#222,' + gradient + ')'"></div>
             <div class="back" :data-matchkey="cardData.matchKey">
                 <img :src="require('@/assets/' + cardImage + '')" alt="" class="image" style="max-width: 200px;">
             </div>
@@ -20,7 +20,8 @@
         },
         data() {
             return {
-                cardImage: this.cardData.img
+                cardImage: this.cardData.img,
+                gradient: this.getGradientColor(),
             }
         },
         computed: {
@@ -34,6 +35,11 @@
         methods: {
             flipCard: function () {
                 this.$emit('flipped', this.cardData.id);
+            },
+            getGradientColor: function () {
+                let colors = ['#1b4f72','#21618c','#2874a6','#2e86c1','#3498db','#5dade2','#85c1e9'];
+
+                return colors[Math.floor(Math.random() * colors.length)];
             }
         }
     }
@@ -64,7 +70,7 @@
     }
 
     .matched .inner .front {
-        background: linear-gradient(45deg, #808080, #e3e3e3);
+        background: linear-gradient(45deg, #808080, #e3e3e3) !important;
     }
 
     .matched .inner .front::before {
@@ -106,7 +112,7 @@
     }
 
     .front {
-        background: linear-gradient(45deg, #222, rgb(200, 39, 92));
+        /*background: linear-gradient(45deg, #222, rgb(200, 39, 92));*/
         z-index: 2;
     }
 
