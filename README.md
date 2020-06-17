@@ -9,6 +9,9 @@ Second attempt at memory card game, I think it came out better than first
 
 Try it [here](https://pexeso-with-pictures.vercel.app/)
 
+
+![pexeso](pexeso.jpg)
+
 -------
  
 illustrations used from https://illlustrations.co/
