@@ -1,8 +1,8 @@
 <template>
   <div id="app" class="container">
-    <ScoreBoard :score=score />
+    <ScoreBoard />
 
-    <ControlBoard  @reseted="reset" @shuffled="shuffle" @picked="pickNewSet" :mainCount=cardVarietyCount />
+    <ControlBoard  @reseted="reset" @shuffled="shuffle" @picked="pickNewSet" />
 
     <div class="pyro" v-show="fireworks">
       <div class="before"></div>
@@ -17,11 +17,13 @@
 </template>
 
 <script>
+  import Vue from 'vue'
   import ScoreBoard from './components/ScoreBoard.vue'
+  import ControlBoard from "@/components/ControlBoard";
   import Card from './components/Card'
   import cardsArray from './cards'
-  import Vue from 'vue'
-  import ControlBoard from "@/components/ControlBoard";
+  import { mapGetters,mapActions } from "vuex";
+
 
   export default {
   name: 'App',
@@ -30,29 +32,28 @@
     Card,
     ControlBoard
   },
-  mounted: function() {
+    mounted: function() {
 
-    let cards = this.getRandomCards(this.cardVarietyCount);
+      let cards = this.getRandomCards(this.varietyCount);
 
-    this.generateCardsPairs(cards);
+      this.generateCardsPairs(cards);
 
-    this.shuffleCards();
+      this.shuffleCards();
   },
-  data: function() {
-    return {
-      cards: [],
-      cardVarietyCount: 15,
-      flipCount: 0,
-      firstFlipID: null,
-      firstFlipMatchKey: null,
-      score: 0,
-      fireworks: false,
-    }
-  },
-  methods: {
-    incrementFlipsThisTurn() {
-      this.flipCount++;
+    data: function() {
+      return {
+        cards: [],
+        firstFlipID: null,
+        firstFlipMatchKey: null,
+        fireworks: false,
+      }
     },
+    computed: {
+      ...mapGetters(['varietyCount','flipCount'])
+    },
+    methods: {
+      ...mapActions(['updateScore','updateCardVariety','incrementFlipsThisTurn','resetFlipCount']),
+
     flipCard: function(cardID) {
 
       const flippedCard = this.cards.find(obj => obj.id === cardID);
@@ -63,11 +64,11 @@
 
       this.incrementFlipsThisTurn();
 
-      if(this.flipCount === 1) {
+      if(parseInt(this.flipCount) === 1) {
         this.flipFirst(flippedCard);
       }
 
-      if(this.flipCount === 2) {
+      if(parseInt(this.flipCount) === 2) {
         this.flipSecond(flippedCard);
       }
     },
@@ -94,11 +95,11 @@
       setTimeout(() => {
         if (card.matchKey === this.firstFlipMatchKey) {
           // Match!
-          this.flipCount = 0;
+          this.resetFlipCount();
 
           this.cards = this.cards.map(item => [card.id, this.firstFlipID].includes(item.id) ? { ...item, isMatched: true,isIgnored: true } : item );
 
-          this.score++;
+          this.updateScore({value: 1 });
 
           setTimeout(() => {
             this.checkFinishingMove();
@@ -108,7 +109,7 @@
           // Not a match
           this.showCard(card.id);
           this.showCard(this.firstFlipID);
-          this.flipCount = 0;
+          this.resetFlipCount();
         }
       }, 850);
     },
@@ -124,24 +125,26 @@
     reset: function() {
       this.cards = [];
 
-      let cards = this.getRandomCards(this.cardVarietyCount);
+      let cards = this.getRandomCards(this.varietyCount);
 
       this.generateCardsPairs(cards);
 
       this.shuffleCards();
 
-      this.flipCount = 0;
+      this.resetFlipCount();
       this.firstFlipID = null;
       this.firstFlipMatchKey = null;
-      this.score= 0;
+      this.updateScore({reset: true});
       this.fireworks = false;
 
     },
     shuffle: function() {
       this.shuffleCards();
     },
-    pickNewSet: function(value) {
+    pickNewSet: function() {
       this.cards = [];
+
+      let value = this.varietyCount;
 
       let cards = this.getRandomCards(value);
 
@@ -149,11 +152,10 @@
 
       this.shuffleCards();
 
-      this.flipCount = 0;
+      this.resetFlipCount();
       this.firstFlipID = null;
       this.firstFlipMatchKey = null;
-      this.score= 0;
-      this.cardVarietyCount = value;
+      this.updateScore({reset: true});
       this.fireworks = false;
     },
     generateCardsPairs: function (cards) {

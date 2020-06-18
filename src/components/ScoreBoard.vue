@@ -1,20 +1,17 @@
 <template>
     <div class="scoreboard-section">
         <div>
-            Score: {{score}}
+            Score: {{overallScore}}
         </div>
     </div>
 </template>
 
 <script>
+    import { mapGetters } from 'vuex';
+
     export default {
         name: "ScoreBoard",
-        props: {
-            score: {
-                type: Number,
-                default: 0
-            }
-        }
+        computed: mapGetters(['overallScore'])
     }
 </script>
 

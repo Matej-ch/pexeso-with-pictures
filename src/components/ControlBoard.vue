@@ -7,21 +7,22 @@
 
         <div>
             <span class="info">How many different cards do you want: </span>
-            <input type="number" min="1" max="50" :value=mainCount ref="cardCountInput" class="input">
+            <input type="number" min="1" max="50" :value=varietyCount ref="cardCountInput" class="input">
             <button class="btn" @click="pickNewSet">Pick</button>
         </div>
     </div>
 </template>
 
 <script>
+    import { mapGetters, mapActions } from 'vuex';
+
     export default {
         name: "ControlBoard",
-        props: {
-            mainCount: {
-                type: Number,
-            },
+        computed: {
+            ...mapGetters(['varietyCount'])
         },
         methods: {
+            ...mapActions(['updateCardVariety']),
             reset: function () {
                 this.$emit('reseted');
             },
@@ -31,12 +32,14 @@
             pickNewSet: function () {
                 let input = this.$refs.cardCountInput;
                 let val = input.value;
-                if(val > parseInt(input.getAttribute('max'))) {
-                    input.value = val;
+                let max = parseInt(input.getAttribute('max'));
+                if(val > max) {
+                    input.value = max;
+                    this.updateCardVariety({count : max});
                 } else {
-                    this.$emit('picked',input.value);
+                    this.updateCardVariety({count : parseInt(val)});
                 }
-
+                this.$emit('picked');
             }
         }
     }
