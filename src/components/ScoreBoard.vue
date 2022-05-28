@@ -1,18 +1,17 @@
 <template>
     <div class="scoreboard-section">
         <div>
-            Score: {{overallScore}}
+            Score: {{gameState.overallScore}}
         </div>
     </div>
 </template>
 
-<script>
-    import { mapGetters } from 'vuex';
+<script setup>
 
-    export default {
-        name: "ScoreBoard",
-        computed: mapGetters(['overallScore'])
-    }
+import {useGameStore} from "../stores/state";
+
+const gameState = useGameStore();
+
 </script>
 
 <style scoped lang="scss">
