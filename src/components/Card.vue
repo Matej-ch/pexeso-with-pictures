@@ -3,7 +3,7 @@
         <div class="inner">
             <div class="front" :style="'background: linear-gradient(45deg,#222,' + gradient + ')'"></div>
             <div class="back" :data-matchkey="cardData.matchKey">
-                <img :src="require('@/assets/' + cardImage + '')" alt="" class="image" style="max-width: 200px;">
+                <img :src="imgUrl" alt="" class="image" style="max-width: 200px;">
             </div>
         </div>
 
@@ -12,6 +12,8 @@
 
 <script setup>
 import {computed, ref} from 'vue'
+
+const imgUrl = new URL('../assets/101-gym-guy.svg', import.meta.url).href
 
 const props = defineProps({
     cardData: Object

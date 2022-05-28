@@ -17,202 +17,185 @@
 </template>
 
 <script setup>
-import ScoreBoard from './components/ScoreBoard'
-import ControlBoard from "./components/ControlBoard";
-import Card from './components/Card'
+import ScoreBoard from './components/ScoreBoard.vue'
+import ControlBoard from "./components/ControlBoard.vue";
+import Card from './components/Card.vue'
 import cardsArray from './cards'
 import {ref, onMounted} from "vue"
 import {useGameStore} from "./stores/state";
 
 const gameState = useGameStore();
+const cards = ref([]);
+const fireworks = ref(false);
+const firstFlipID = ref(null);
+const firstFlipMatchKey = ref(null);
 
 onMounted(() => {
 
+    let cards = getRandomCards(gameState.varietyCount);
+
+    generateCardsPairs(cards);
+
+    shuffleCards();
 });
 
-export default {
-    mounted: function () {
+function getRandomCards(count) {
+    let cards = new Array(count);
+    let len = cardsArray.length;
+    let taken = new Array(len);
 
-        let cards = this.getRandomCards(this.varietyCount);
-
-        this.generateCardsPairs(cards);
-
-        this.shuffleCards();
-    },
-    data: function () {
-        return {
-            cards: [],
-            firstFlipID: null,
-            firstFlipMatchKey: null,
-            fireworks: false,
-        }
-    },
-    computed: {
-        ...mapGetters(['varietyCount', 'flipCount'])
-    },
-    methods: {
-        ...mapActions(['updateScore', 'updateCardVariety', 'incrementFlipsThisTurn', 'resetFlipCount']),
-
-        flipCard: function (cardID) {
-
-            const flippedCard = this.cards.find(obj => obj.id === cardID);
-
-            if (flippedCard.isFlipped) {
-                return;
-            }
-
-            this.incrementFlipsThisTurn();
-
-            if (parseInt(this.flipCount) === 1) {
-                this.flipFirst(flippedCard);
-            }
-
-            if (parseInt(this.flipCount) === 2) {
-                this.flipSecond(flippedCard);
-            }
-        },
-
-        flipFirst: function (card) {
-
-            this.showCard(card.id);
-
-            this.firstFlipID = card.id;
-            this.firstFlipMatchKey = card.matchKey;
-        },
-
-        flipSecond: function (card) {
-
-            this.showCard(card.id);
-            this.checkMatch(card);
-        },
-
-        showCard: function (id) {
-            this.cards = this.cards.map(card => (card.id === id && !card.isIgnored) ? {
-                ...card,
-                isFlipped: !card.isFlipped
-            } : card);
-        },
-
-        checkMatch: function (card) {
-            setTimeout(() => {
-                if (card.matchKey === this.firstFlipMatchKey) {
-                    // Match!
-                    this.resetFlipCount();
-
-                    this.cards = this.cards.map(item => [card.id, this.firstFlipID].includes(item.id) ? {
-                        ...item,
-                        isMatched: true,
-                        isIgnored: true
-                    } : item);
-
-                    this.updateScore({value: 1});
-
-                    setTimeout(() => {
-                        this.checkFinishingMove();
-                    }, 500);
-
-                } else {
-                    // Not a match
-                    this.showCard(card.id);
-                    this.showCard(this.firstFlipID);
-                    this.resetFlipCount();
-                }
-            }, 850);
-        },
-
-        checkFinishingMove: function () {
-            const isIgnored = (card) => card.isIgnored;
-
-            if (this.cards.every(isIgnored)) {
-                this.cards = [];
-                this.fireworks = true;
-            }
-        },
-        reset: function () {
-            this.cards = [];
-
-            let cards = this.getRandomCards(this.varietyCount);
-
-            this.generateCardsPairs(cards);
-
-            this.shuffleCards();
-
-            this.resetFlipCount();
-            this.firstFlipID = null;
-            this.firstFlipMatchKey = null;
-            this.updateScore({reset: true});
-            this.fireworks = false;
-
-        },
-        shuffle: function () {
-            this.shuffleCards();
-        },
-        pickNewSet: function () {
-            this.cards = [];
-
-            let value = this.varietyCount;
-
-            let cards = this.getRandomCards(value);
-
-            this.generateCardsPairs(cards);
-
-            this.shuffleCards();
-
-            this.resetFlipCount();
-            this.firstFlipID = null;
-            this.firstFlipMatchKey = null;
-            this.updateScore({reset: true});
-            this.fireworks = false;
-        },
-        generateCardsPairs: function (cards) {
-
-            for (const card of cards) {
-                let name = card.src.split('.')[0];
-                const firstCard = {
-                    matchKey: name,
-                    isFlipped: false,
-                    isMatched: false,
-                    isIgnored: false,
-                    id: `${name}-a`,
-                    img: `${card.src}`,
-                };
-
-                this.cards.push(firstCard);
-
-                const secondCard = {...firstCard};
-                secondCard.id = `${name}-b`;
-
-                this.cards.push(secondCard);
-            }
-        },
-
-        getRandomCards: function (n) {
-            let cards = new Array(n);
-            let len = cardsArray.length;
-            let taken = new Array(len);
-
-            while (n--) {
-                let x = Math.floor(Math.random() * len);
-                cards[n] = cardsArray[x in taken ? taken[x] : x];
-                taken[x] = --len in taken ? taken[len] : len;
-            }
-
-            return cards;
-        },
-
-        shuffleCards: function () {
-            let currentIndex = this.cards.length, temp, randomIndex;
-
-            while (0 !== currentIndex) {
-                randomIndex = Math.floor(Math.random() * currentIndex);
-                currentIndex -= 1;
-
-                temp = this.cards[currentIndex];
-                Vue.set(this.cards, currentIndex, this.cards[randomIndex]);
-                Vue.set(this.cards, randomIndex, temp);
-            }
-        }
+    while (count--) {
+        let x = Math.floor(Math.random() * len);
+        cards[count] = cardsArray[x in taken ? taken[x] : x];
+        taken[x] = --len in taken ? taken[len] : len;
     }
+
+    return cards;
+}
+
+function generateCardsPairs(localCards) {
+    for (const card of localCards) {
+        let name = card.src.split('.')[0];
+        const firstCard = {
+            matchKey: name,
+            isFlipped: false,
+            isMatched: false,
+            isIgnored: false,
+            id: `${name}-a`,
+            img: `${card.src}`,
+        };
+
+        cards.value.push(firstCard);
+
+        const secondCard = {...firstCard};
+        secondCard.id = `${name}-b`;
+
+        cards.value.push(secondCard);
+    }
+}
+
+function shuffleCards() {
+    let currentIndex = cards.value.length, temp, randomIndex;
+
+    while (0 !== currentIndex) {
+        randomIndex = Math.floor(Math.random() * currentIndex);
+        currentIndex -= 1;
+
+        temp = cards.value[currentIndex];
+
+        cards.value[currentIndex] = cards.value[randomIndex];
+
+        cards.value[randomIndex] = temp;
+    }
+}
+
+function shuffle() {
+    shuffleCards();
+}
+
+function flipCard(cardID) {
+    const flippedCard = cards.value.find(obj => obj.id === cardID);
+
+    if (flippedCard.isFlipped) {
+        return;
+    }
+
+    gameState.incrementFlips();
+
+    if (parseInt(gameState.flipCount) === 1) {
+        flipFirst(flippedCard);
+    }
+
+    if (parseInt(gameState.flipCount) === 2) {
+        flipSecond(flippedCard);
+    }
+}
+
+function flipFirst(card) {
+    showCard(card.id);
+
+    firstFlipID.value = card.id;
+    firstFlipMatchKey.value = card.matchKey
+}
+
+function flipSecond(card) {
+    showCard(card.id);
+    checkMatch(card);
+}
+
+function showCard(cardID) {
+    cards.value = cards.value.map(card => (card.id === cardID && !card.isIgnored) ? {
+        ...card,
+        isFlipped: !card.isFlipped
+    } : card);
+}
+
+function checkFinishingMove() {
+    const isIgnored = (card) => card.isIgnored;
+
+    if (cards.value.every(isIgnored)) {
+        cards.value = [];
+        fireworks.value = true;
+    }
+}
+
+function reset() {
+    cards.value = [];
+
+    let localCards = getRandomCards(gameState.varietyCount);
+
+    generateCardsPairs(localCards);
+
+    shuffleCards();
+
+    gameState.resetFlipCount();
+    firstFlipID.value = null;
+    firstFlipMatchKey.value = null;
+    gameState.updateScore(0, true);
+    fireworks.value = false;
+}
+
+function pickNewSet() {
+    cards.value = [];
+
+    let localCards = getRandomCards(gameState.varietyCount);
+
+    generateCardsPairs(localCards);
+
+    shuffleCards();
+
+    gameState.resetFlipCount();
+    firstFlipID.value = null;
+    firstFlipMatchKey.value = null;
+    gameState.updateScore(0, true);
+    fireworks.value = false;
+}
+
+function checkMatch(card) {
+    setTimeout(() => {
+        if (card.matchKey === firstFlipMatchKey.value) {
+            // Match!
+            gameState.resetFlipCount();
+
+            this.cards = this.cards.map(item => [card.id, firstFlipID.value].includes(item.id) ? {
+                ...item,
+                isMatched: true,
+                isIgnored: true
+            } : item);
+
+            gameState.updateScore(1);
+
+            setTimeout(() => {
+                checkFinishingMove();
+            }, 500);
+
+        } else {
+            // Not a match
+            showCard(card.id);
+            showCard(firstFlipID.value);
+            gameState.resetFlipCount();
+        }
+    }, 850);
 }
 </script>
 
