@@ -1,9 +1,7 @@
-import Vue from 'vue'
+import {createApp} from 'vue'
 import App from './App.vue'
-import store from './store'
-Vue.config.productionTip = false
+import {createPinia} from 'pinia'
 
-new Vue({
-  render: h => h(App),
-  store,
-}).$mount('#app')
+createApp(App)
+    .use(createPinia())
+    .mount('#app')

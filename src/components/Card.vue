@@ -45,7 +45,7 @@
     }
 </script>
 
-<style scoped>
+<style scoped lang="scss">
     .card {
         max-width: 100%;
         perspective: 1000px;

@@ -15,7 +15,7 @@
     }
 </script>
 
-<style scoped>
+<style scoped lang="scss">
     .scoreboard-section {
         padding: 30px 15px 15px 15px;
         font-size: 3em;

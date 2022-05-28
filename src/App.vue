@@ -22,7 +22,6 @@
   import ControlBoard from "@/components/ControlBoard";
   import Card from './components/Card'
   import cardsArray from './cards'
-  import { mapGetters,mapActions } from "vuex";
 
 
   export default {
@@ -210,9 +209,9 @@
 }
 </script>
 
-<style>
+<style lang="scss">
 
-  @import './assets/styles/main.css';
+  @import './assets/styles/main.scss';
 
   .container {
     overflow: auto;

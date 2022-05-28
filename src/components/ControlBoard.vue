@@ -45,7 +45,7 @@
     }
 </script>
 
-<style scoped>
+<style scoped lang="scss">
     .btns-container {
         padding: 15px 30px;
         display: flex;
