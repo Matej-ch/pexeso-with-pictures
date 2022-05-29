@@ -11,9 +11,9 @@
 </template>
 
 <script setup>
-import {computed, ref} from 'vue'
+import {computed, ref, onMounted} from 'vue'
 
-const imgUrl = new URL('../assets/101-gym-guy.svg', import.meta.url).href
+const imgUrl = new URL(`../assets/${props.cardData.img}`, import.meta.url).href
 
 const props = defineProps({
     cardData: Object
@@ -22,14 +22,19 @@ const props = defineProps({
 const emit = defineEmits(['flipped'])
 
 const cardImage = ref(props.cardData.img);
-const gradient = ref(getGradientColor);
+const gradient = ref(null);
+
+onMounted(() => {
+    gradient.value = getGradientColor();
+});
 
 function flipCard() {
+    console.log('flip card: ', props.cardData.id);
     emit('flipped', props.cardData.id);
 }
 
 function getGradientColor() {
-    let colors = ['#1b4f72', '#21618c', '#2874a6', '#2e86c1', '#3498db', '#5dade2', '#85c1e9'];
+    const colors = ['#1b4f72', '#21618c', '#2874a6', '#2e86c1', '#3498db', '#5dade2', '#85c1e9'];
 
     return colors[Math.floor(Math.random() * colors.length)];
 }

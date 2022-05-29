@@ -96,6 +96,7 @@ function shuffle() {
 function flipCard(cardID) {
     const flippedCard = cards.value.find(obj => obj.id === cardID);
 
+    console.log('flip card in app');
     if (flippedCard.isFlipped) {
         return;
     }

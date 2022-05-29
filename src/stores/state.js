@@ -5,7 +5,7 @@ export const useGameStore = defineStore('game', {
         return {
             cards: [],
             cardVarietyCount: 15,
-            flipCount: 0,
+            flips: 0,
             score: 0
         }
     },
@@ -16,7 +16,7 @@ export const useGameStore = defineStore('game', {
 
         allCards: (state) => state.cards,
 
-        flipCount: (state) => state.flipCount
+        flipCount: (state) => state.flips
     },
     actions: {
         updateCardVariety(value) {
@@ -30,10 +30,10 @@ export const useGameStore = defineStore('game', {
             }
         },
         incrementFlips() {
-            this.flipCount++;
+            this.flips++;
         },
         resetFlipCount() {
-            this.flipCount = 0;
+            this.flips = 0;
         }
     }
 })
