@@ -96,7 +96,6 @@ function shuffle() {
 function flipCard(cardID) {
     const flippedCard = cards.value.find(obj => obj.id === cardID);
 
-    console.log('flip card in app');
     if (flippedCard.isFlipped) {
         return;
     }
@@ -178,7 +177,7 @@ function checkMatch(card) {
             // Match!
             gameState.resetFlipCount();
 
-            this.cards = this.cards.map(item => [card.id, firstFlipID.value].includes(item.id) ? {
+            cards.value = cards.value.map(item => [card.id, firstFlipID.value].includes(item.id) ? {
                 ...item,
                 isMatched: true,
                 isIgnored: true

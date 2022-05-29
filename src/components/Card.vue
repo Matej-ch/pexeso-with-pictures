@@ -21,7 +21,6 @@ const props = defineProps({
 
 const emit = defineEmits(['flipped'])
 
-const cardImage = ref(props.cardData.img);
 const gradient = ref(null);
 
 onMounted(() => {
@@ -29,7 +28,6 @@ onMounted(() => {
 });
 
 function flipCard() {
-    console.log('flip card: ', props.cardData.id);
     emit('flipped', props.cardData.id);
 }
 
@@ -116,7 +114,6 @@ const cardClasses = computed(() => {
 }
 
 .front {
-    /*background: linear-gradient(45deg, #222, rgb(200, 39, 92));*/
     z-index: 2;
 }
 
