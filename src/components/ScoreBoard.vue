@@ -15,10 +15,10 @@ const gameState = useGameStore();
 </script>
 
 <style scoped lang="scss">
-    .scoreboard-section {
-        padding: 30px 15px 15px 15px;
-        font-size: 3em;
-        color: whitesmoke;
-        font-weight: bold;
-    }
+.scoreboard-section {
+    padding: 15px 15px 15px 15px;
+    font-size: 3em;
+    color: whitesmoke;
+    font-weight: bold;
+}
 </style>

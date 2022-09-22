@@ -130,4 +130,17 @@ const cardClasses = computed(() => {
     max-width: 100%;
     max-height: 100%;
 }
+
+@media only screen and (max-width: 768px) {
+    .card {
+        width: 100px;
+        height: 100px;
+    }
+
+    .matched .inner .front::before {
+        font-size: 4em;
+    }
+
+}
+
 </style>

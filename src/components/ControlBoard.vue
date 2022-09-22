@@ -1,6 +1,6 @@
 <template>
     <div class="btns-container">
-        <div>
+        <div class="reset-shuffle">
             <button class="btn" @click="reset">Reset game</button>
             <button class="btn" @click="shuffle">Shuffle</button>
         </div>
@@ -105,5 +105,19 @@ function pickNewSet() {
 
 .input[type=number] {
     -moz-appearance: textfield;
+}
+
+@media only screen and (max-width: 768px) {
+    .reset-shuffle {
+        display: flex;
+        justify-content: space-between;
+        margin-bottom: 1em;
+        width: 100%;
+    }
+
+    .info {
+        width: 100%;
+        display: inline-block;
+    }
 }
 </style>
